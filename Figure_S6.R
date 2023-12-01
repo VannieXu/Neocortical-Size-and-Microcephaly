@@ -105,4 +105,19 @@ pdf(paste0("plots/",fname,"_PannelCandE_heatmap_and_dotplot.pdf"))
   
 dev.off()
 ```
+```{r Figure S6 Pannel G}
+GO <- read.csv('FigureS6_selected_GO.csv')
 
+names(GO) <- make.names(names(GO))
+GO$Term <- gsub("\\s*\\([^\\)]+\\)","",GO$Term)
+GO$rank <- row.names(GO)
+
+pdf(paste0("plots/",fname,"_PannelD.pdf"),width=12,height=10)
+  ggplot(head(GO,15),aes(x = -log10(Adjusted.P.value), y = rank)) + 
+    geom_bar(stat="identity")+
+    scale_y_discrete(limits = head(GO,15)$rank) + 
+    labs(title = 'GO Terms in E14.5 Neuron no tricycle', x = TeX(r"($-log_{10}$ Adjusted P-value)"),y = 'GO Terms') +
+    geom_text(aes(0,label = Term),colour = "black",hjust = 0)+
+    monocle3:::monocle_theme_opts()
+dev.off()
+```
