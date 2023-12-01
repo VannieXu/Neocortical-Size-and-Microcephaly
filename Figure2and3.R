@@ -101,3 +101,54 @@ pdf(paste0("plots/",fname,"_PannelF.pdf"))
     labs(title = 'E14.5 BP')
 dev.off()
 ```
+
+```{r pannel 2F and 3A}
+cdsP <- cds[,pData(cds)$celltype %in% c('AP','BP')]
+
+gene_fits <- fit_models(cdsN[,pData(cdsN)$age==14.5], model_formula_str = "~Batch+condition",cores = 10)
+fit_coefs <- coefficient_table(gene_fits)
+unique(coefficient_table(gene_fits)$term)
+
+sig_terms <- DEcondition %>% filter (q_value < 0.05 & std_err > 0)
+sig_genes <- sig_terms %>% pull(gene_short_name)
+
+s2 <- sig_terms
+s2 <- s2[s2$std_err < 0.15,]
+s2$label <- s2$gene_short_name
+s2$q_value[s2$q_value == 0] <- 1E-310
+
+s2 <- s2[!grepl('Rpl',s2$gene_short_name),]
+s2 <- s2[!grepl('Rps',s2$gene_short_name),]
+s2 <- s2[!grepl('mt-',s2$gene_short_name),]
+
+fname <- 'Figure2'
+highlight <- c('Notch1','Dll1','Hes1')
+pdf(paste0("plots/",fname,"_PannelF.pdf"))
+  ggplot(s2,aes(x=normalized_effect,y=-log10(q_value),label=label)) +
+    geom_point(data = s2[!s2$gene_short_name %in%(highlight),],aes(x=normalized_effect,y=-log10(q_value),label=label), color = "black")+
+    geom_point(data = s2[s2$gene_short_name %in%c(highlight),],aes(x=normalized_effect,y=-log10(q_value),label=label), color = "red")+
+    geom_text_repel(data =s2[s2$gene_short_name %in%c(highlight),], max.overlaps = Inf,direction = 'y') +
+    xlab(paste("Normalized effect size conditionko")) +
+    geom_vline(xintercept = 0,linetype="dashed") +
+    ylab(TeX(r"($-log_{10}$ q-value)")) +
+    theme(legend.position = "none") + 
+    monocle3:::monocle_theme_opts()
+dev.off()
+
+fname <- 'Figure3'
+highlight <- c('Tacc1','Afdn','Pak3','Smarca5','Zbtb18','Kif11','Msmo1','Tpx2','Haus1','Bub1b','Ckap2l','Plk4','Ccnd2','Auts2','Wls','Nav2','Ier3ip1',
+               'Col4a1','Sgce','Mid1','Phgdh','Dab1','Col4a2','Zeb2','Celsr1','Cdk5rap2','Knl1','Aspm','Cenpj','Stil','Cep135','Cdk6','Sass6',
+               'Mfsd2a','Cit','Copb2')
+pdf(paste0("plots/",fname,"_PannelA.pdf"))
+  ggplot(s2,aes(x=normalized_effect,y=-log10(q_value),label=label)) +
+    geom_point(data = s2[!s2$gene_short_name %in%(highlight),],aes(x=normalized_effect,y=-log10(q_value),label=label), color = "black")+
+    geom_point(data = s2[s2$gene_short_name %in%c(highlight),],aes(x=normalized_effect,y=-log10(q_value),label=label), color = "red")+
+    geom_text_repel(data =s2[s2$gene_short_name %in%c(highlight),], max.overlaps = Inf,direction = 'y') +
+    xlab(paste("Normalized effect size conditionko")) +
+    geom_vline(xintercept = 0,linetype="dashed") +
+    ylab(TeX(r"($-log_{10}$ q-value)")) +
+    theme(legend.position = "none") + 
+    monocle3:::monocle_theme_opts()
+dev.off()
+```
+
