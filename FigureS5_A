@@ -1,0 +1,83 @@
+```{r init}
+library(Matrix)
+library(tidyverse)
+library(biomaRt)
+library(monocle3)
+library(rgl)
+library(tricycle)
+library(dplyr)
+```
+
+```{r load_cds}
+baseDir = "./"
+setwd(baseDir)
+cds<-readRDS("cache/merged_CDS_expressed_genes_CellRanger.rds")
+fname<-"CR_BC_sans9"
+```
+
+```{r, eval=FALSE}
+## Step 1: Normalize and pre-process the data
+cds <- preprocess_cds(cds, num_dim = 50, preprocess_method = "PCA",
+                      verbose=TRUE
+                      )
+
+plot_pc_variance_explained(cds)
+
+cds <- align_cds(cds, alignment_group =c("Batch"))
+
+cds<-reduce_dimension(cds,max_components = 3, cores=10,
+                      reduction_method="UMAP",
+                      preprocess_method = 'Aligned',
+                      verbose=TRUE)
+
+plot_cells(cds,
+           label_cell_groups=FALSE,
+           color_cells_by="Batch") + ggtitle("By Batch")
+```
+
+```{r}
+cds <- cluster_cells(cds,
+                     reduction_method="UMAP",
+                     cluster_method="louvain",
+                     resolution=2e-6,
+                     verbose=T
+                     )
+```
+
+```{r recode_clusters_as_celltypes FigureS4.D}
+
+colData(cds)$assigned_cell_type <- as.character(clusters(cds))
+colData(cds)$assigned_cell_type <- dplyr::recode(colData(cds)$assigned_cell_type,
+                                                "1"="Neurons + IPCs (BP)",
+                                                "2"="AP",
+                                                "3"="AP",
+                                                "4"="Epithelial cells",
+                                                "5"="Interneurons/ Interneuronal lineage",
+                                                "6"="IPCs (BP)",
+                                                "7"="Interneurons/ Interneuronal lineage",
+                                                "8"="cajal retzius cells/ layer I",
+                                                "9"="Endothelial cells/ Fibroblasts - ECM organization",
+                                                "10"=" ",
+                                                "11"="Blood Cells",
+                                                "12"="Erythroid lineage",
+                                                "13"=" ",
+                                                "14"="Pericytes",
+                                                "15"="Epithelial cells",
+                                                "16"="Hematopoietic lineage",
+                                                "17"="Fibroblasts",
+                                                "18"="Microglia / Microglia lineage",
+                                                "19"="Oligodendrocytes/ Oligodendrocytes lineage",
+                                                "20"="CSF/Plasma")
+pdf("FigureS5_PannelA.pdf",width=12,height=12)
+  plot_cells(cds, color_cells_by="assigned_cell_type") 
+dev.off()
+```
+cds <- cds[,c(clusters(cds)==1|clusters(cds)==2|clusters(cds)==6)]
+cds <- cds[,pData(cds)$sample != '9']
+
+cds <- align_cds(cds, alignment_group =c("Batch"))
+
+cds<-reduce_dimension(cds,max_components = 2, cores=10,
+                      reduction_method="UMAP",
+                      preprocess_method = 'Aligned',
+                      verbose=TRUE)
