@@ -238,7 +238,7 @@ dev.off()
 ```
 
 ```{r Pannel L}
-genes <- c('MCPH1','CDK5RAP2','ASPM','CENPJ','STIL','CEP135','SASS6','CIT','COPB2')
+genes <- c('MCPH1','CDK5RAP2','ASPM','CENPJ','STIL','CEP135','SASS6','CIT','WDFY3')
 indx<-which(fData(cds)$gene_short_name %in% genes)
 cdsP <- cds[indx,pData(cds)$celltype %in% c("AP","BP") ]
 
