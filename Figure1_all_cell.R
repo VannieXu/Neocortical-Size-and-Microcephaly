@@ -57,3 +57,15 @@ pdf(paste0("plots/",fname,"PannelJ_tricycle.pdf"),width=12,height=10)
 dev.off()
 ```
 
+```{r Pannel K}
+cdsP <- cds[,pData(cds)$celltype %in% c('AP')]
+pdf(paste0("plots/",fname,"PannelK_AP.pdf"),width=12,height=10)
+ plot_ccposition_den(pData(cdsP)$tricyclePosition,pData(cdsP)$age.cond,'age.cond',bw = 10) + ggpubr::theme_pubr()
+dev.off()
+
+cdsP <- cds[,pData(cds)$celltype %in% c('BP')]
+pdf(paste0("plots/",fname,"PannelK_BP.pdf"),width=12,height=10)
+ plot_ccposition_den(pData(cdsP)$tricyclePosition,pData(cdsP)$age.cond,'age.cond',bw = 10) + ggpubr::theme_pubr()
+dev.off()
+```
+
