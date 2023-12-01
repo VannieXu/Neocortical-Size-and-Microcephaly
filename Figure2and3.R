@@ -150,5 +150,40 @@ pdf(paste0("plots/",fname,"_PannelA.pdf"))
     theme(legend.position = "none") + 
     monocle3:::monocle_theme_opts()
 dev.off()
+
+genes <- c('Cdk5rap2','Knl1','Aspm','Cenpj','Stil','Cep135','Sass6','Mfsd2a','Cit','Copb2')
+indx<-which(fData(cds)$gene_short_name %in% genes)
+cdsP <- cds[indx,pData(cds)$celltype %in% c("AP","BP")]
+
+total <- rowSums(exprs(cdsP[,pData(cdsP)$age == 14.5]))/rowSums(!!exprs(cdsP[,pData(cdsP)$age == 14.5]))
+h14 <- data.frame(rowSums(exprs(cdsP[,pData(cdsP)$age.cond %in% c("14.5.control")]))/rowSums(!!exprs(cdsP[,pData(cdsP)$age.cond %in% c("14.5.control")])))/total
+rownames(h14) <- fData(cdsP)$gene_short_name
+colnames(h14) <- c('Control')
+h14$dKO <-rowSums(exprs(cdsP[,pData(cdsP)$age.cond %in% c("14.5.ko")]))/rowSums(!!exprs(cdsP[,pData(cdsP)$age.cond %in% c("14.5.ko")]))/total
+h14[is.na(h14)] <- 0
+h14 <- (h14-min(h14))/(max(h14)-min(h14))
+
+expression14 <- reshape2::melt(as.matrix(h14),varnames = c('genes','condition'),value.name = 'mean')
+percent14 <- data.frame(rowSums(!!exprs(cdsP[,pData(cdsP)$age.cond %in% c('14.5.control')]))/dim(exprs(cdsP[,pData(cdsP)$age.cond %in% c('14.5.control')]))[2])
+rownames(percent14) <- fData(cdsP)$gene_short_name
+colnames(percent14) <- c('Control')
+percent14$dKO <- rowSums(!!exprs(cdsP[,pData(cdsP)$age.cond %in% c('14.5.ko')]))/dim(exprs(cdsP[,pData(cdsP)$age.cond %in% c('14.5.ko')]))[2]
+percent14 <- reshape2::melt(as.matrix(percent14),varnames = c('genes','condition'),value.name = 'percent')
+
+pdf(paste0("plots/Pannel3A_heatmap.pdf"))
+  dot14 <- merge(expression14,percent14)
+
+  ggplot(reshape::melt(as.matrix(h14)), aes(x = X2, y =X1 , fill = value))+ geom_tile(color = "white")+     
+      scale_fill_gradientn(colors=viridis(16),guide="colorbar",limits = c(0,1))+ coord_fixed(ratio = 0.8) + 
+      scale_y_discrete(limits = rev(genes)) + 
+      labs(title = 'E14.5 BP', x = 'Condition',y = 'Genes')+ theme(panel.grid.major = element_blank(),   
+                                                                   panel.grid.minor = element_blank(),
+                                                                   panel.background = element_blank())
+
+  ggplot(dot14,aes(x=condition, y = genes, color = mean, size = percent)) + 
+    geom_point()  + scale_y_discrete(limits = rev(genes)) +
+    scale_color_gradientn(colors = viridis(16),name = 'mean expression',limits = c(0,1))+
+    scale_size(name = 'percentage per condition', range = c(0, 10))+ monocle3:::monocle_theme_opts() +
+    labs(title = 'E14.5 BP')
 ```
 
