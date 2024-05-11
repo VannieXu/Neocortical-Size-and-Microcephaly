@@ -132,7 +132,7 @@ pdf(paste0("plots/",fname,"_PannelF_volcano.pdf"))
     monocle3:::monocle_theme_opts()
 dev.off()
 
-fname <- 'Figure3'
+fname <- 'Figure4'
 highlight <- c('Tacc1','Afdn','Pak3','Smarca5','Zbtb18','Kif11','Msmo1','Tpx2','Haus1','Bub1b','Ckap2l','Plk4','Ccnd2','Auts2','Wls','Nav2','Ier3ip1',
                'Col4a1','Sgce','Mid1','Phgdh','Dab1','Col4a2','Zeb2','Celsr1','Cdk5rap2','Knl1','Aspm','Cenpj','Stil','Cep135','Cdk6','Sass6',
                'Mfsd2a','Cit','Copb2')
@@ -167,7 +167,7 @@ colnames(percent14) <- c('Control')
 percent14$dKO <- rowSums(!!exprs(cdsP[,pData(cdsP)$age.cond %in% c('14.5.ko')]))/dim(exprs(cdsP[,pData(cdsP)$age.cond %in% c('14.5.ko')]))[2]
 percent14 <- reshape2::melt(as.matrix(percent14),varnames = c('genes','condition'),value.name = 'percent')
 
-pdf(paste0("plots/Pannel3A_heatmap.pdf"))
+pdf(paste0("plots/Pannel4A_heatmap.pdf"))
   dot14 <- merge(expression14,percent14)
 
   ggplot(reshape::melt(as.matrix(h14)), aes(x = X2, y =X1 , fill = value))+ geom_tile(color = "white")+     
