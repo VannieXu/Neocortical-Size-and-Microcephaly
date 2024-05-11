@@ -10,7 +10,7 @@ library(ggplot2)
 
 ```{r load data}
 cds <- readRDS('E36_v2.rds')
-fname <- 'Figure4'
+fname <- 'Figure5'
 
 S_matrix <- SingleCellExperiment::reducedDims(cds)[['UMAP']]
 data_df <- data.frame(S_matrix)
@@ -237,7 +237,7 @@ pdf(paste0("plots/",fname,"PannelM.pdf"),width=10,height=10)
 dev.off()
 ```
 
-```{r Pannel L}
+```{r Pannel R}
 genes <- c('MCPH1','CDK5RAP2','ASPM','CENPJ','STIL','CEP135','SASS6','CIT','WDFY3')
 indx<-which(fData(cds)$gene_short_name %in% genes)
 cdsP <- cds[indx,pData(cds)$celltype %in% c("AP","BP") ]
@@ -250,7 +250,7 @@ h$KO <-rowSums(exprs(cdsP[,pData(cdsP)$sample %in% c('E36_KO')]))/rowSums(!!expr
 h[is.na(h)] <- 0
 h <- (h-min(h))/(max(h)-min(h))
 
-pdf(paste0("plots/",fname,"PannelL.pdf"),width=10,height=10)
+pdf(paste0("plots/",fname,"PannelR.pdf"),width=10,height=10)
   ggplot(reshape2::melt(as.matrix(h)), aes(x = Var2, y =Var1 , fill = value))+ geom_tile(color = "white")+     
     #scale_fill_gradientn(colors=hcl.colors(16, palette = "GnBu", alpha = NULL, rev = FALSE, fixup = TRUE),guide="colorbar")+ coord_fixed(ratio = 0.8) +
     scale_fill_gradientn(colors=viridis(16),guide="colorbar")+ coord_fixed(ratio = 0.8) +
