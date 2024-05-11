@@ -72,6 +72,8 @@ pdf("FigureS5_PannelA.pdf",width=12,height=12)
   plot_cells(cds, color_cells_by="assigned_cell_type") 
 dev.off()
 ```
+
+```{r}
 cds <- cds[,c(clusters(cds)==1|clusters(cds)==2|clusters(cds)==6)]
 cds <- cds[,pData(cds)$sample != '9']
 
@@ -81,3 +83,4 @@ cds<-reduce_dimension(cds,max_components = 2, cores=10,
                       reduction_method="UMAP",
                       preprocess_method = 'Aligned',
                       verbose=TRUE)
+```
