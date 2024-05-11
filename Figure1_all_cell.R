@@ -97,7 +97,7 @@ colnames(percent14) <- c('Control')
 percent14$dKO <- rowSums(!!exprs(cdsP[,pData(cdsP)$age.cond %in% c('14.5.ko')]))/dim(exprs(cdsP[,pData(cdsP)$age.cond %in% c('14.5.ko')]))[2]
 percent14 <- reshape2::melt(as.matrix(percent14),varnames = c('genes','condition'),value.name = 'percent')
 
-pdf(paste0("plots/",fname,"_PannelCandE_heatmap_and_dotplot.pdf"))
+pdf(paste0("plots/",fname,"_PannelMandN_heatmap_and_dotplot.pdf"))
 
   ggplot(reshape::melt(as.matrix(h12)), aes(x = X2, y =X1 , fill = value))+ geom_tile(color = "white")+     
     scale_fill_gradientn(colors=viridis(16),guide="colorbar",limits = c(0,1))+ coord_fixed(ratio = 0.8) + 
@@ -128,27 +128,3 @@ pdf(paste0("plots/",fname,"_PannelCandE_heatmap_and_dotplot.pdf"))
   
 dev.off()
 ```
-
-#From old version
-```{r Pannel J}
-hue.colors = c("#2E22EA","#9E3DFB", "#F86BE2", "#FCCE7B", "#C4E416", "#4BBA0F", "#447D87", "#2C24E9")
-hue.n = 50
-
-pdf(paste0("plots/",fname,"PannelJ_tricycle.pdf"),width=12,height=10)
-  plot_cells(cds,color_cells_by = 'tricyclePosition',label_cell_groups = FALSE)+
-    scale_color_gradientn(limits = range(0, 2 * pi), breaks = seq(from = 0, to = 2 * pi, length.out = hue.n), colors = hue.colors, guide = "none")
-dev.off()
-```
-
-```{r Pannel K}
-cdsP <- cds[,pData(cds)$celltype %in% c('AP')]
-pdf(paste0("plots/",fname,"PannelK_AP.pdf"),width=12,height=10)
- plot_ccposition_den(pData(cdsP)$tricyclePosition,pData(cdsP)$age.cond,'age.cond',bw = 10) + ggpubr::theme_pubr()
-dev.off()
-
-cdsP <- cds[,pData(cds)$celltype %in% c('BP')]
-pdf(paste0("plots/",fname,"PannelK_BP.pdf"),width=12,height=10)
- plot_ccposition_den(pData(cdsP)$tricyclePosition,pData(cdsP)$age.cond,'age.cond',bw = 10) + ggpubr::theme_pubr()
-dev.off()
-```
-
