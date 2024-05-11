@@ -27,7 +27,7 @@ fname<-"Figure2"
 hue.colors = c("#2E22EA","#9E3DFB", "#F86BE2", "#FCCE7B", "#C4E416", "#4BBA0F", "#447D87", "#2C24E9")
 hue.n = 50
 
-pdf(paste0("plots/",fname,"PannelJ_tricycle.pdf"),width=12,height=10)
+pdf(paste0("plots/",fname,"PannelA_tricycle.pdf"),width=12,height=10)
   plot_cells(cds,color_cells_by = 'tricyclePosition',label_cell_groups = FALSE)+
     scale_color_gradientn(limits = range(0, 2 * pi), breaks = seq(from = 0, to = 2 * pi, length.out = hue.n), colors = hue.colors, guide = "none")
 dev.off()
@@ -35,12 +35,12 @@ dev.off()
 
 ```{r Pannel B}
 cdsP <- cds[,pData(cds)$celltype %in% c('AP')]
-pdf(paste0("plots/",fname,"PannelK_AP.pdf"),width=12,height=10)
+pdf(paste0("plots/",fname,"PannelB_AP.pdf"),width=12,height=10)
  plot_ccposition_den(pData(cdsP)$tricyclePosition,pData(cdsP)$age.cond,'age.cond',bw = 10) + ggpubr::theme_pubr()
 dev.off()
 
 cdsP <- cds[,pData(cds)$celltype %in% c('BP')]
-pdf(paste0("plots/",fname,"PannelK_BP.pdf"),width=12,height=10)
+pdf(paste0("plots/",fname,"PannelB_BP.pdf"),width=12,height=10)
  plot_ccposition_den(pData(cdsP)$tricyclePosition,pData(cdsP)$age.cond,'age.cond',bw = 10) + ggpubr::theme_pubr()
 dev.off()
 ```
